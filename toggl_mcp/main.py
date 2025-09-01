@@ -8,7 +8,7 @@ import sys
 import json
 import logging
 from datetime import datetime, timedelta
-from typing import Optional, List, Dict, Any
+from typing import Optional, List, Dict, Any, Union
 from dateutil import parser
 
 from mcp.server.fastmcp import FastMCP
@@ -67,7 +67,7 @@ async def toggl_list_organizations() -> List[Dict[str, Any]]:
 
 # Project Tools
 @mcp.tool()
-async def toggl_list_projects(workspace_id: Optional[int] = None) -> List[Dict[str, Any]]:
+async def toggl_list_projects(workspace_id: Optional[Union[int, str]] = None) -> List[Dict[str, Any]]:
     """List all projects in a workspace
     
     Args:
@@ -75,6 +75,9 @@ async def toggl_list_projects(workspace_id: Optional[int] = None) -> List[Dict[s
     """
     if not toggl_client:
         return {"error": "Toggl client not initialized. Please set TOGGL_API_TOKEN environment variable."}
+    # Convert string to int if needed
+    if workspace_id is not None and isinstance(workspace_id, str):
+        workspace_id = int(workspace_id)
     wid = get_workspace_id(workspace_id)
     return await toggl_client.get_projects(wid)
 
@@ -204,9 +207,9 @@ async def toggl_create_time_entry(
     description: str,
     start: str,
     stop: str,
-    workspace_id: Optional[int] = None,
-    project_id: Optional[int] = None,
-    task_id: Optional[int] = None,
+    workspace_id: Optional[Union[int, str]] = None,
+    project_id: Optional[Union[int, str]] = None,
+    task_id: Optional[Union[int, str]] = None,
     tags: Optional[List[str]] = None,
     tag_ids: Optional[List[int]] = None,
     billable: Optional[bool] = None,
@@ -234,6 +237,14 @@ async def toggl_create_time_entry(
     if not toggl_client:
         logger.error("Toggl client not initialized")
         return {"error": "Toggl client not initialized. Please set TOGGL_API_TOKEN environment variable."}
+    
+    # Convert string IDs to integers
+    if workspace_id is not None and isinstance(workspace_id, str):
+        workspace_id = int(workspace_id)
+    if project_id is not None and isinstance(project_id, str):
+        project_id = int(project_id)
+    if task_id is not None and isinstance(task_id, str):
+        task_id = int(task_id)
     
     try:
         wid = get_workspace_id(workspace_id)
@@ -375,8 +386,8 @@ async def toggl_create_project_task(
     return await toggl_client.create_project_task(wid, project_id, name)
 
 
-def run():
-    """Entry point for the package"""
+async def setup_and_run():
+    """Setup and run the server"""
     global toggl_client, default_workspace_id
     
     logger.info("Starting Toggl MCP server...")
@@ -409,7 +420,13 @@ def run():
     
     # Run the server
     logger.info("Starting MCP server on stdio transport")
-    mcp.run(transport='stdio')
+    await mcp.run_stdio_async()
+
+
+def run():
+    """Entry point for the package"""
+    import asyncio
+    asyncio.run(setup_and_run())
 
 
 if __name__ == "__main__":
