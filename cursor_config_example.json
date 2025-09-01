@@ -1,0 +1,10 @@
+{
+  "toggl-mcp": {
+    "command": "uvx",
+    "args": ["toggl-mcp"],
+    "env": {
+      "TOGGL_API_TOKEN": "your_toggl_api_token_here",
+      "TOGGL_WORKSPACE_ID": "your_workspace_id_here"
+    }
+  }
+}

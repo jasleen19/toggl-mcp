@@ -66,3 +66,9 @@ dist/
 
 # Test environments
 test_env/
+
+# Config files with sensitive data
+cursor_config_local.json
+cursor_mcp_test.json
+cursor_working_config.json
+*_config_with_token.json
