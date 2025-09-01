@@ -1,0 +1,53 @@
+[project]
+name = "toggl-mcp"
+version = "0.1.0"
+description = "A Model Context Protocol server for Toggl API integration"
+readme = "README.md"
+requires-python = ">=3.11"
+dependencies = [
+    "mcp>=0.1.0",
+    "httpx>=0.24.0",
+    "pydantic>=2.0.0",
+    "python-dateutil>=2.8.0",
+]
+authors = [{name = "Toggl MCP Contributors", email = "jasleenkaur1909@gmail.com"}]
+license = {text = "MIT"}
+keywords = ["mcp", "toggl", "time-tracking", "api", "model-context-protocol"]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Topic :: Software Development :: Libraries",
+    "Topic :: Office/Business :: Scheduling",
+]
+
+[project.urls]
+Homepage = "https://github.com/jasleen19/toggl-mcp"
+Repository = "https://github.com/jasleen19/toggl-mcp"
+Issues = "https://github.com/jasleen19/toggl-mcp/issues"
+Documentation = "https://github.com/jasleen19/toggl-mcp#readme"
+
+[project.scripts]
+toggl-mcp = "main:main"
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build]
+include = [
+    "*.py",
+    "README.md",
+    "LICENSE",
+]
+exclude = [
+    "test_*.py",
+    "example_config.json",
+    "__pycache__",
+    "*.pyc",
+    ".git*",
+]
