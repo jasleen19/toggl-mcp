@@ -23,38 +23,34 @@ from .tools import get_all_tools, handle_tool_call
 toggl_client: Optional[TogglClient] = None
 default_workspace_id: Optional[int] = None
 
+# Create server at module level
+server = Server("toggl-mcp")
 
-def create_toggl_server() -> Server:
-    """Create and configure the MCP server"""
-    server = Server("toggl-mcp")
+@server.list_tools()
+async def list_tools() -> List[Tool]:
+    """List all available Toggl tools"""
+    return get_all_tools()
+
+@server.call_tool()
+async def call_tool(name: str, arguments: Dict[str, Any]) -> List[TextContent]:
+    """Handle tool calls"""
+    if not toggl_client:
+        return [TextContent(
+            type="text",
+            text="Error: Toggl client not initialized. Please set TOGGL_API_TOKEN environment variable."
+        )]
     
-    @server.list_tools()
-    async def list_tools() -> List[Tool]:
-        """List all available Toggl tools"""
-        return get_all_tools()
-    
-    @server.call_tool()
-    async def call_tool(name: str, arguments: Dict[str, Any]) -> List[TextContent]:
-        """Handle tool calls"""
-        if not toggl_client:
-            return [TextContent(
-                type="text",
-                text="Error: Toggl client not initialized. Please set TOGGL_API_TOKEN environment variable."
-            )]
-        
-        try:
-            result = await handle_tool_call(toggl_client, default_workspace_id, name, arguments)
-            return [TextContent(
-                type="text",
-                text=json.dumps(result, indent=2)
-            )]
-        except Exception as e:
-            return [TextContent(
-                type="text",
-                text=f"Error: {str(e)}"
-            )]
-    
-    return server
+    try:
+        result = await handle_tool_call(toggl_client, default_workspace_id, name, arguments)
+        return [TextContent(
+            type="text",
+            text=json.dumps(result, indent=2)
+        )]
+    except Exception as e:
+        return [TextContent(
+            type="text",
+            text=f"Error: {str(e)}"
+        )]
 
 
 async def main():
@@ -80,8 +76,7 @@ async def main():
         except ValueError:
             print(f"Warning: Invalid TOGGL_WORKSPACE_ID '{workspace_id_str}', ignoring", file=sys.stderr)
     
-    # Create and run the server
-    server = create_toggl_server()
+    # Run the server
     async with stdio_server() as (read_stream, write_stream):
         await server.run(
             read_stream,
