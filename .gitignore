@@ -72,3 +72,7 @@ cursor_config_local.json
 cursor_mcp_test.json
 cursor_working_config.json
 *_config_with_token.json
+
+# Temporary files
+tools_output.json
+*.tmp

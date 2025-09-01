@@ -76,9 +76,8 @@ class TogglClient:
     async def create_time_entry(self, workspace_id: int, description: str, **kwargs) -> Dict:
         """Create a new time entry"""
         data = {
-            "workspace_id": workspace_id,
             "description": description,
-            "created_with": "toggl-mcp",
+            "created_with": kwargs.pop("created_with", "toggl-mcp"),
             **kwargs
         }
         return await self._request("POST", f"/workspaces/{workspace_id}/time_entries", json=data)

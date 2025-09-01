@@ -218,6 +218,7 @@ _This tool requires no parameters._
     "description": "Code review",
     "start": "2025-01-03T09:00:00Z",
     "stop": "2025-01-03T10:30:00Z",
+    "workspace_id": 9361160,
     "project_id": 12345,
     "task_id": 67890,
     "billable": true,
@@ -225,6 +226,10 @@ _This tool requires no parameters._
   }
 }
 ```
+
+**Note:** The `workspace_id` parameter is required. Either:
+1. Include it in your request (e.g., `"workspace_id": 9361160`)
+2. Or set `TOGGL_WORKSPACE_ID` environment variable in your Cursor configuration
 
 ### Listing Time Entries
 ```json
@@ -247,9 +252,9 @@ _This tool requires no parameters._
 
 ## Important Notes
 
-1. **Workspace ID**: Most tools accept an optional `workspace_id` parameter. If not provided, the default workspace from the `TOGGL_WORKSPACE_ID` environment variable will be used.
+1. **Workspace ID**: Most tools accept an optional `workspace_id` parameter. If not provided, the default workspace from the `TOGGL_WORKSPACE_ID` environment variable will be used. **If neither is provided, you'll get an error: "No workspace_id provided and no default workspace set"**
 
-2. **Date/Time Format**: All date and time parameters must be in ISO 8601 format (e.g., "2025-01-03T14:30:00Z").
+2. **Date/Time Format**: All date and time parameters must be in ISO 8601 format (e.g., "2025-01-03T14:30:00Z")
 
 3. **IDs vs Names**: When referencing projects, tasks, or tags, you typically need to use their numeric IDs, not names. Use the list tools to find the appropriate IDs.
 
