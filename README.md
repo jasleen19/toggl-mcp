@@ -18,6 +18,8 @@ The Toggl MCP server provides tools for:
 - **Client Management**: Create and list clients
 - **Task Management**: List and create project tasks (if enabled for the project)
 
+📚 **[View Complete Tool Documentation](TOOLS_DOCUMENTATION.md)** - Comprehensive guide with all parameters, types, and examples
+
 ## Installation
 
 Install the package using `uvx`:

@@ -133,8 +133,11 @@ async def toggl_start_timer(
     description: str,
     workspace_id: Optional[int] = None,
     project_id: Optional[int] = None,
+    task_id: Optional[int] = None,
     tags: Optional[List[str]] = None,
-    billable: Optional[bool] = None
+    tag_ids: Optional[List[int]] = None,
+    billable: Optional[bool] = None,
+    created_with: Optional[str] = "toggl-mcp"
 ) -> Dict[str, Any]:
     """Start a new time entry (timer)
     
@@ -142,8 +145,11 @@ async def toggl_start_timer(
         description: Time entry description
         workspace_id: Workspace ID (uses default if not provided)
         project_id: Project ID (optional)
+        task_id: Task ID for the project (optional)
         tags: List of tag names (optional)
+        tag_ids: List of tag IDs (optional)
         billable: Whether the time entry is billable (optional)
+        created_with: Source of the time entry (default: "toggl-mcp")
     """
     if not toggl_client:
         return {"error": "Toggl client not initialized. Please set TOGGL_API_TOKEN environment variable."}
@@ -154,10 +160,16 @@ async def toggl_start_timer(
     }
     if project_id is not None:
         kwargs["project_id"] = project_id
+    if task_id is not None:
+        kwargs["task_id"] = task_id
     if tags is not None:
         kwargs["tags"] = tags
+    if tag_ids is not None:
+        kwargs["tag_ids"] = tag_ids
     if billable is not None:
         kwargs["billable"] = billable
+    if created_with is not None:
+        kwargs["created_with"] = created_with
     return await toggl_client.create_time_entry(wid, description, **kwargs)
 
 
@@ -185,19 +197,27 @@ async def toggl_create_time_entry(
     stop: str,
     workspace_id: Optional[int] = None,
     project_id: Optional[int] = None,
+    task_id: Optional[int] = None,
     tags: Optional[List[str]] = None,
-    billable: Optional[bool] = None
+    tag_ids: Optional[List[int]] = None,
+    billable: Optional[bool] = None,
+    duronly: Optional[bool] = None,
+    created_with: Optional[str] = "toggl-mcp"
 ) -> Dict[str, Any]:
     """Create a completed time entry with specific start and stop times
     
     Args:
         description: Time entry description
-        start: Start time (ISO 8601 format)
-        stop: Stop time (ISO 8601 format)
+        start: Start time (ISO 8601 format, e.g., "2025-08-27T17:00:00Z")
+        stop: Stop time (ISO 8601 format, e.g., "2025-08-27T19:00:00Z")
         workspace_id: Workspace ID (uses default if not provided)
         project_id: Project ID (optional)
+        task_id: Task ID for the project (optional)
         tags: List of tag names (optional)
+        tag_ids: List of tag IDs (optional)
         billable: Whether the time entry is billable (optional)
+        duronly: Whether to save only duration, no start/stop times (optional)
+        created_with: Source of the time entry (default: "toggl-mcp")
     """
     if not toggl_client:
         return {"error": "Toggl client not initialized. Please set TOGGL_API_TOKEN environment variable."}
@@ -211,10 +231,18 @@ async def toggl_create_time_entry(
     
     if project_id is not None:
         kwargs["project_id"] = project_id
+    if task_id is not None:
+        kwargs["task_id"] = task_id
     if tags is not None:
         kwargs["tags"] = tags
+    if tag_ids is not None:
+        kwargs["tag_ids"] = tag_ids
     if billable is not None:
         kwargs["billable"] = billable
+    if duronly is not None:
+        kwargs["duronly"] = duronly
+    if created_with is not None:
+        kwargs["created_with"] = created_with
     return await toggl_client.create_time_entry(wid, description, **kwargs)
 
 
