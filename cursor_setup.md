@@ -1,14 +1,14 @@
 # Setting up Toggl MCP in Cursor
 
-## Method 1: Using uvx (Recommended)
+## Method 1: Using Python Module (Recommended)
 
 In Cursor settings, add this MCP configuration:
 
 ```json
 {
   "toggl-mcp": {
-    "command": "uvx",
-    "args": ["toggl-mcp"],
+    "command": "python3",
+    "args": ["-m", "toggl_mcp"],
     "env": {
       "TOGGL_API_TOKEN": "your_actual_toggl_api_token",
       "TOGGL_WORKSPACE_ID": "your_workspace_id"
@@ -17,15 +17,19 @@ In Cursor settings, add this MCP configuration:
 }
 ```
 
-## Method 2: Using Python directly
+## Method 2: Using pipx
 
-If uvx doesn't work, try using Python directly:
+First install with pipx:
+```bash
+pipx install toggl-mcp
+```
 
+Then use in Cursor:
 ```json
 {
   "toggl-mcp": {
-    "command": "python3",
-    "args": ["-m", "toggl_mcp"],
+    "command": "pipx",
+    "args": ["run", "toggl-mcp"],
     "env": {
       "TOGGL_API_TOKEN": "your_actual_toggl_api_token",
       "TOGGL_WORKSPACE_ID": "your_workspace_id"
@@ -77,3 +81,4 @@ If the package installation doesn't work, use the source directly:
 - **"No tools" error**: Usually means the MCP server isn't starting
 - **Permission denied**: Make sure the command is executable
 - **Module not found**: Package might not be installed in the right Python environment
+- **uvx not working**: Currently, `uvx` has compatibility issues with async MCP servers. Use the Python module method instead
