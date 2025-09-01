@@ -2,7 +2,7 @@
 
 [![PyPI version](https://badge.fury.io/py/toggl-mcp.svg)](https://pypi.org/project/toggl-mcp/)
 
-MCP server for [Toggl Track API v9](https://engineering.toggl.com/docs/index.html).
+MCP server for [Toggl](https://engineering.toggl.com/docs/index.html).
 
 ## Installation
 
