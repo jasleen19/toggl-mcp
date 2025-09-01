@@ -4,12 +4,6 @@ version = "0.1.5"
 description = "A Model Context Protocol server for Toggl API integration"
 readme = "README.md"
 requires-python = ">=3.11"
-dependencies = [
-    "mcp>=0.1.0",
-    "httpx>=0.24.0",
-    "pydantic>=2.0.0",
-    "python-dateutil>=2.8.0",
-]
 authors = [{name = "Toggl MCP Contributors", email = "jasleenkaur1909@gmail.com"}]
 license = {text = "MIT"}
 keywords = ["mcp", "toggl", "time-tracking", "api", "model-context-protocol"]
@@ -23,6 +17,20 @@ classifiers = [
     "Programming Language :: Python :: 3.13",
     "Topic :: Software Development :: Libraries",
     "Topic :: Office/Business :: Scheduling",
+]
+dependencies = [
+    "mcp>=0.1.0",
+    "httpx>=0.24.0",
+    "pydantic>=2.0.0",
+    "python-dateutil>=2.8.0",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=7.4.0",
+    "pytest-asyncio>=0.21.0",
+    "pytest-cov>=4.1.0",
+    "pytest-mock>=3.11.0",
 ]
 
 [project.urls]
@@ -46,8 +54,42 @@ include = [
 ]
 exclude = [
     "test_*.py",
-    "example_config.json",
     "__pycache__",
     "*.pyc",
     ".git*",
 ]
+
+[tool.pytest.ini_options]
+# Test discovery patterns
+python_files = ["test_*.py"]
+python_classes = ["Test*"]
+python_functions = ["test_*"]
+
+# Test paths
+testpaths = ["tests"]
+
+# Add the project root to the Python path
+pythonpath = ["."]
+
+# Markers for different test types
+markers = [
+    "unit: Unit tests",
+    "integration: Integration tests",
+    "smoke: Smoke tests",
+    "slow: Slow tests",
+]
+
+# Coverage options
+addopts = [
+    "-v",
+    "--tb=short",
+    "--strict-markers",
+    "--disable-warnings",
+    "-p", "no:warnings",
+]
+
+# Async test configuration
+asyncio_mode = "auto"
+
+# Minimum Python version
+minversion = "3.11"
