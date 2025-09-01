@@ -4,7 +4,10 @@ Toggl API v9 Client
 
 from base64 import b64encode
 from typing import Dict, List, Optional
+import logging
 import httpx
+
+logger = logging.getLogger(__name__)
 
 
 class TogglClient:
@@ -28,11 +31,36 @@ class TogglClient:
     async def _request(self, method: str, endpoint: str, **kwargs) -> Dict:
         """Make an API request"""
         url = f"{self.BASE_URL}{endpoint}"
-        response = await self.client.request(
-            method, url, headers=self.headers, **kwargs
-        )
-        response.raise_for_status()
-        return response.json() if response.content else {}
+        
+        # Log the request details
+        logger.debug(f"Making {method} request to: {url}")
+        if 'json' in kwargs:
+            logger.debug(f"Request body: {kwargs['json']}")
+        
+        try:
+            response = await self.client.request(
+                method, url, headers=self.headers, **kwargs
+            )
+            
+            # Log response details
+            logger.debug(f"Response status: {response.status_code}")
+            if response.content:
+                logger.debug(f"Response body: {response.text[:500]}...")  # First 500 chars
+            
+            # Raise for HTTP errors
+            response.raise_for_status()
+            
+            result = response.json() if response.content else {}
+            logger.debug(f"Parsed response: {result}")
+            return result
+            
+        except httpx.HTTPStatusError as e:
+            logger.error(f"HTTP {e.response.status_code} error for {method} {url}")
+            logger.error(f"Response body: {e.response.text}")
+            raise
+        except Exception as e:
+            logger.error(f"Request failed: {e}")
+            raise
     
     async def get_me(self) -> Dict:
         """Get current user information"""
@@ -76,6 +104,8 @@ class TogglClient:
     async def create_time_entry(self, workspace_id: int, description: str, **kwargs) -> Dict:
         """Create a new time entry"""
         data = {
+            "workspace_id": workspace_id,  # API requires this in the body
+            "wid": workspace_id,  # Some endpoints prefer 'wid' instead of 'workspace_id'
             "description": description,
             "created_with": kwargs.pop("created_with", "toggl-mcp"),
             **kwargs

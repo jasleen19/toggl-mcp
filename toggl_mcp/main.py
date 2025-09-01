@@ -6,12 +6,21 @@ Toggl MCP Server - A Model Context Protocol server for Toggl API integration
 import os
 import sys
 import json
+import logging
 from datetime import datetime, timedelta
 from typing import Optional, List, Dict, Any
 from dateutil import parser
 
 from mcp.server.fastmcp import FastMCP
 from .toggl_client import TogglClient
+
+# Set up logging
+logging.basicConfig(
+    level=logging.DEBUG if os.getenv("DEBUG") else logging.INFO,
+    format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
+    stream=sys.stderr
+)
+logger = logging.getLogger(__name__)
 
 
 # Initialize FastMCP server
@@ -219,15 +228,27 @@ async def toggl_create_time_entry(
         duronly: Whether to save only duration, no start/stop times (optional)
         created_with: Source of the time entry (default: "toggl-mcp")
     """
+    logger.info(f"Creating time entry: '{description}' from {start} to {stop}")
+    logger.debug(f"Parameters: workspace_id={workspace_id}, project_id={project_id}, task_id={task_id}")
+    
     if not toggl_client:
+        logger.error("Toggl client not initialized")
         return {"error": "Toggl client not initialized. Please set TOGGL_API_TOKEN environment variable."}
-    wid = get_workspace_id(workspace_id)
+    
+    try:
+        wid = get_workspace_id(workspace_id)
+        logger.debug(f"Using workspace ID: {wid}")
+    except ValueError as e:
+        logger.error(f"Workspace ID error: {e}")
+        return {"error": str(e)}
+    
     kwargs = {"start": start, "stop": stop}
     
     # Calculate duration
     start_dt = parser.parse(start)
     stop_dt = parser.parse(stop)
     kwargs["duration"] = int((stop_dt - start_dt).total_seconds())
+    logger.debug(f"Calculated duration: {kwargs['duration']} seconds")
     
     if project_id is not None:
         kwargs["project_id"] = project_id
@@ -243,7 +264,16 @@ async def toggl_create_time_entry(
         kwargs["duronly"] = duronly
     if created_with is not None:
         kwargs["created_with"] = created_with
-    return await toggl_client.create_time_entry(wid, description, **kwargs)
+    
+    logger.debug(f"Final kwargs for API call: {kwargs}")
+    
+    try:
+        result = await toggl_client.create_time_entry(wid, description, **kwargs)
+        logger.info(f"Successfully created time entry with ID: {result.get('id', 'unknown')}")
+        return result
+    except Exception as e:
+        logger.error(f"Failed to create time entry: {e}")
+        return {"error": f"Failed to create time entry: {str(e)}"}
 
 
 # Tag Tools
@@ -349,13 +379,18 @@ def run():
     """Entry point for the package"""
     global toggl_client, default_workspace_id
     
+    logger.info("Starting Toggl MCP server...")
+    
     # Get API token from environment
     api_token = os.getenv("TOGGL_API_TOKEN")
     if not api_token:
+        logger.error("TOGGL_API_TOKEN environment variable not set")
         print("Error: TOGGL_API_TOKEN environment variable not set", file=sys.stderr)
         print("Please set your Toggl API token:", file=sys.stderr)
         print("  export TOGGL_API_TOKEN=your_api_token_here", file=sys.stderr)
         sys.exit(1)
+    
+    logger.info("API token found, initializing Toggl client")
     
     # Initialize Toggl client
     toggl_client = TogglClient(api_token)
@@ -365,10 +400,15 @@ def run():
     if workspace_id_str:
         try:
             default_workspace_id = int(workspace_id_str)
+            logger.info(f"Using default workspace ID: {default_workspace_id}")
         except ValueError:
+            logger.warning(f"Invalid TOGGL_WORKSPACE_ID '{workspace_id_str}', ignoring")
             print(f"Warning: Invalid TOGGL_WORKSPACE_ID '{workspace_id_str}', ignoring", file=sys.stderr)
+    else:
+        logger.info("No default workspace ID set")
     
     # Run the server
+    logger.info("Starting MCP server on stdio transport")
     mcp.run(transport='stdio')
 
 

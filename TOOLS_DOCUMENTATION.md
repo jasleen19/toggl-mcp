@@ -227,9 +227,16 @@ _This tool requires no parameters._
 }
 ```
 
-**Note:** The `workspace_id` parameter is required. Either:
-1. Include it in your request (e.g., `"workspace_id": 9361160`)
-2. Or set `TOGGL_WORKSPACE_ID` environment variable in your Cursor configuration
+**Note:** 
+1. The `workspace_id` parameter is required. Either:
+   - Include it in your request (e.g., `"workspace_id": 9361160`)
+   - Or set `TOGGL_WORKSPACE_ID` environment variable in your Cursor configuration
+
+2. Some workspaces have **time entry constraints** that require additional fields:
+   - If you get error: `"Please fill in all required field(s) to save: project and task"`
+   - This means the workspace requires both `project_id` and `task_id`
+   - Use `toggl_list_projects` to find project IDs
+   - Use `toggl_list_project_tasks` to find task IDs for a project
 
 ### Listing Time Entries
 ```json
@@ -265,6 +272,13 @@ _This tool requires no parameters._
 6. **Tag IDs vs Tag Names**: You can use either `tags` (array of tag names) or `tag_ids` (array of tag IDs). If both are provided, both will be used.
 
 7. **Created With**: The `created_with` parameter helps identify the source of time entries. It defaults to "toggl-mcp" but can be customized.
+
+8. **Time Entry Constraints**: Some workspaces enforce constraints on time entries:
+   - **project_present**: Requires a project_id
+   - **task_present**: Requires a task_id (only for projects with tasks enabled)
+   - **tag_present**: Requires at least one tag
+   - **description_present**: Requires a description
+   - Check workspace settings or watch for "Please fill in all required field(s)" errors
 
 ## Toggl API Parameter Mapping
 
