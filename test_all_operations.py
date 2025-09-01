@@ -7,7 +7,7 @@ import asyncio
 import os
 import sys
 from datetime import datetime, timedelta
-from toggl_client import TogglClient
+from toggl_mcp.toggl_client import TogglClient
 import json
 
 

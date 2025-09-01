@@ -1,6 +1,6 @@
 [project]
 name = "toggl-mcp"
-version = "0.1.0"
+version = "0.1.1"
 description = "A Model Context Protocol server for Toggl API integration"
 readme = "README.md"
 requires-python = ">=3.11"
@@ -32,7 +32,7 @@ Issues = "https://github.com/jasleen19/toggl-mcp/issues"
 Documentation = "https://github.com/jasleen19/toggl-mcp#readme"
 
 [project.scripts]
-toggl-mcp = "main:main"
+toggl-mcp = "toggl_mcp.main:run"
 
 [build-system]
 requires = ["hatchling"]

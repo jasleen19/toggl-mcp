@@ -6,7 +6,7 @@ Test script to verify Toggl API connection
 import asyncio
 import os
 import sys
-from toggl_client import TogglClient
+from toggl_mcp.toggl_client import TogglClient
 
 
 async def test_connection():

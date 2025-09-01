@@ -15,8 +15,8 @@ from mcp.server.models import InitializationOptions
 from mcp.server.stdio import stdio_server
 from mcp.types import Tool, TextContent
 
-from toggl_client import TogglClient
-from tools import get_all_tools, handle_tool_call
+from .toggl_client import TogglClient
+from .tools import get_all_tools, handle_tool_call
 
 
 # Global variables
@@ -97,5 +97,10 @@ async def main():
         await toggl_client.close()
 
 
-if __name__ == "__main__":
+def run():
+    """Entry point for the package"""
     asyncio.run(main())
+
+
+if __name__ == "__main__":
+    run()

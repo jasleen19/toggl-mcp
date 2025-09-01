@@ -8,8 +8,8 @@ import json
 import os
 import sys
 from datetime import datetime, timedelta
-from main import create_toggl_server
-from toggl_client import TogglClient
+from toggl_mcp.main import create_toggl_server
+from toggl_mcp.toggl_client import TogglClient
 
 
 async def test_mcp_tools():
@@ -17,7 +17,7 @@ async def test_mcp_tools():
     print("🚀 Testing Toggl MCP Tools\n")
     
     # Initialize globals as in main.py
-    import main
+    from toggl_mcp import main
     main.toggl_client = TogglClient(os.getenv("TOGGL_API_TOKEN"))
     
     # Get default workspace if set
@@ -199,6 +199,7 @@ async def test_mcp_tools():
         return False
     
     finally:
+        from toggl_mcp import main
         if main.toggl_client:
             await main.toggl_client.close()
 
