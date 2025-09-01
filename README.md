@@ -29,7 +29,7 @@ Add to `.cursor/mcp.json`:
 }
 ```
 
-### Claude Desktop
+### Claude Code
 
 ```bash
 claude mcp add toggl-mcp -s user \
