@@ -8,7 +8,7 @@ import json
 import os
 import sys
 from datetime import datetime, timedelta
-from toggl_mcp.main import create_toggl_server
+from toggl_mcp.main import mcp, setup_and_run
 from toggl_mcp.toggl_client import TogglClient
 
 
@@ -28,7 +28,8 @@ async def test_mcp_tools():
         except ValueError:
             pass
     
-    server = create_toggl_server()
+    # The mcp server is already created in main.py
+    server = mcp
     
     # Get available tools
     tools = await server.list_tools()

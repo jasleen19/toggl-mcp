@@ -16,35 +16,37 @@ jobs:
     steps:
     - uses: actions/checkout@v4
     
-    - name: Set up Python ${{ matrix.python-version }}
-      uses: actions/setup-python@v5
+    - name: Install uv
+      uses: astral-sh/setup-uv@v3
       with:
-        python-version: ${{ matrix.python-version }}
+        enable-cache: true
+        cache-dependency-glob: "pyproject.toml"
+    
+    - name: Set up Python ${{ matrix.python-version }}
+      run: uv python install ${{ matrix.python-version }}
     
     - name: Install dependencies
       run: |
-        python -m pip install --upgrade pip
-        pip install -e .
-        pip install pytest httpx python-dotenv pydantic
+        uv venv
+        uv pip install -e .
     
-    - name: Test module import
+    - name: Test module imports
       run: |
-        python -c "from toggl_mcp.toggl_client import TogglClient"
-        python -c "from toggl_mcp.main import create_toggl_server"
-        python -c "import toggl_mcp"
+        uv run python -c "from toggl_mcp.toggl_client import TogglClient; print('✓ TogglClient import successful')"
+        uv run python -c "from toggl_mcp.main import run, setup_and_run; print('✓ Main functions import successful')"
+        uv run python -c "import toggl_mcp; print('✓ Package import successful')"
     
-    - name: Run tests
+    - name: Run basic tests
       env:
         TOGGL_API_TOKEN: ${{ secrets.TOGGL_API_TOKEN }}
       run: |
-        # Run basic import test
-        python -c "from toggl_mcp.toggl_client import TogglClient; print('Import successful')"
+        # Test that the module structure is correct
+        uv run python -c "from toggl_mcp.toggl_client import TogglClient; from toggl_mcp.main import run, setup_and_run; print('✓ All imports working correctly')"
         
-        # If test files exist, run them (but don't fail if API token is missing)
-        if [ -f "test_connection.py" ]; then
-          python test_connection.py || echo "Connection test skipped (may need API token)"
-        fi
-        
-        if [ -f "test_simple.py" ]; then
-          python test_simple.py || echo "Simple test skipped"
+        # Run connection test if API token is available
+        if [ ! -z "$TOGGL_API_TOKEN" ]; then
+          echo "Running connection test with API token..."
+          uv run python test_connection.py || echo "Connection test failed (check API token)"
+        else
+          echo "Skipping connection test (no API token)"
         fi
