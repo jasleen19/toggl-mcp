@@ -47,6 +47,29 @@ The server requires the following environment variables:
 1. Use the `toggl_list_workspaces` tool after setting up the server
 2. Note the ID of the workspace you want to use as default
 
+## Usage with Cursor
+
+Add the following to your Cursor MCP settings:
+
+1. Open Cursor Settings (Cmd/Ctrl + ,)
+2. Navigate to Features → Model Context Protocol → Edit Config
+3. Add this configuration:
+
+```json
+{
+  "toggl-mcp": {
+    "command": "python3",
+    "args": ["-m", "toggl_mcp"],
+    "env": {
+      "TOGGL_API_TOKEN": "your_api_token_here",
+      "TOGGL_WORKSPACE_ID": "optional_default_workspace_id"
+    }
+  }
+}
+```
+
+4. Restart Cursor for changes to take effect
+
 ## Usage with Claude Desktop
 
 Add the following to your Claude Desktop configuration file:
@@ -136,15 +159,41 @@ Here are some example prompts you can use with Claude:
 7. "Create a tag called 'billable'"
 8. "Show me all projects in workspace 123456"
 
+## Troubleshooting
+
+### "ModuleNotFoundError: No module named 'mcp'"
+
+This error means the dependencies aren't installed. Fix it by:
+
+```bash
+# Option 1: Install the package
+pip install toggl-mcp
+
+# Option 2: Install from source (for development)
+pip install -e .
+```
+
+### Cursor shows "No tools available"
+
+1. Make sure you're using `python3` in the command, not `uvx`
+2. Check that the API token is correctly set in the env section
+3. Restart Cursor after making configuration changes
+
+### "TOGGL_API_TOKEN environment variable not set"
+
+The token needs to be in the MCP configuration's `env` section, not your shell environment.
+
 ## Development
 
 ### Project Structure
 
 ```
 toggl-mcp/
-├── main.py          # Main MCP server entry point
-├── toggl_client.py  # Toggl API client implementation
-├── tools.py         # Tool definitions and handlers
+├── toggl_mcp/       # Package directory
+│   ├── __init__.py  # Package initialization
+│   ├── main.py      # Main MCP server entry point
+│   ├── toggl_client.py  # Toggl API client implementation
+│   └── tools.py     # Tool definitions and handlers
 ├── pyproject.toml   # Project configuration
 └── README.md        # This file
 ```
