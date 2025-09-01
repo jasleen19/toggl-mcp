@@ -3,7 +3,6 @@ include LICENSE
 include pyproject.toml
 include *.py
 exclude test_*.py
-exclude example_config.json
 exclude .github/*
 prune __pycache__
 global-exclude *.pyc
