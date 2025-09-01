@@ -4,7 +4,7 @@
 [![Python](https://img.shields.io/pypi/pyversions/toggl-mcp.svg)](https://pypi.org/project/toggl-mcp/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
-A Model Context Protocol (MCP) server that provides tools for interacting with the Toggl Track API v9. This server allows AI assistants to manage time tracking, projects, tags, and more through a standardized interface.
+A Model Context Protocol (MCP) server that provides tools for interacting with the Toggl Track API v9. Built with FastMCP for simplicity and reliability, this server allows AI assistants to manage time tracking, projects, tags, and more through a standardized interface.
 
 ## Features
 
