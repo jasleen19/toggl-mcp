@@ -1,6 +1,6 @@
 [project]
 name = "toggl-mcp"
-version = "0.1.5"
+version = "0.1.6"
 description = "A Model Context Protocol server for Toggl API integration"
 readme = "README.md"
 requires-python = ">=3.11"
