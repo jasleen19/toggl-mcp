@@ -6,7 +6,27 @@ on:
   workflow_dispatch:  # Allow manual trigger
 
 jobs:
-  build-and-publish:
+  # Run tests first
+  test:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v4
+    
+    - name: Install uv
+      uses: astral-sh/setup-uv@v3
+      with:
+        enable-cache: true
+        cache-dependency-glob: "pyproject.toml"
+    
+    - name: Build package
+      run: uv build
+    
+    - name: Run tests
+      run: uv run pytest tests/
+
+  # Only publish if tests pass
+  publish:
+    needs: test  # This job depends on the test job
     runs-on: ubuntu-latest
     
     steps:
