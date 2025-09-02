@@ -2,13 +2,10 @@ name: CI
 
 on:
   push:
-    branches: [main, develop]
-    paths:
-      - 'toggl_mcp/**'
-      - 'pyproject.toml'
-      - 'tests/**'
+    branches: [main]
   pull_request:
     branches: [main]
+  workflow_dispatch:  # Allow manual trigger
 
 jobs:
   build:
