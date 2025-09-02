@@ -2,17 +2,17 @@
 
 [![PyPI version](https://badge.fury.io/py/toggl-mcp.svg)](https://pypi.org/project/toggl-mcp/)
 
-MCP server for [Toggl](https://engineering.toggl.com/docs/index.html).
+MCP server for [Toggl](https://engineering.toggl.com/docs/index.html)
 
-## Installation
+## Prerequisites
 
-Requires [`uvx`](https://docs.astral.sh/uv/guides/tools/).
+- [`uvx`](https://docs.astral.sh/uv/guides/tools/)
 
 ## Configuration
 
 ### Cursor
 
-Add to `.cursor/mcp.json`:
+Add to `~/.cursor/mcp.json`:
 
 ```json
 {
