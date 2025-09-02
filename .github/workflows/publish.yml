@@ -22,7 +22,7 @@ jobs:
       run: uv build
     
     - name: Run tests
-      run: uv run pytest tests/
+      run: uv run --extra dev pytest tests/
 
   # Only publish if tests pass
   publish:
