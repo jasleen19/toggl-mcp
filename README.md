@@ -19,7 +19,7 @@ Add to `~/.cursor/mcp.json`:
   "mcpServers": {
     "toggl-mcp": {
       "command": "uvx",
-      "args": ["toggl-mcp"],
+      "args": ["--refresh", "toggl-mcp"],
       "env": {
         "TOGGL_API_TOKEN": "YOUR_API_TOKEN",
         "TOGGL_WORKSPACE_ID": "YOUR_WORKSPACE_ID"
